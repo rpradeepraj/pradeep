@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  /* GitHub Dark Theme Colors */
+  --color-gh-bg: #0d1117;
+  --color-gh-bg-secondary: #010409;
+  --color-gh-card: #161b22;
+  --color-gh-card-hover: #1f262d;
+  --color-gh-border: #30363d;
+  --color-gh-border-muted: #21262d;
+
+  /* Text Colors */
+  --color-gh-text: #e6edf3;
+  --color-gh-text-muted: #8b949e;
+  --color-gh-text-subtle: #6e7681;
+
+  /* Accent Colors - Multi-color GitHub style */
+  --color-gh-green: #238636;
+  --color-gh-green-bright: #3fb950;
+  --color-gh-blue: #58a6ff;
+  --color-gh-purple: #8957e5;
+  --color-gh-pink: #f778ba;
+  --color-gh-yellow: #d29922;
+  --color-gh-orange: #db6d28;
+  --color-gh-red: #f85149;
+  --color-gh-cyan: #56d4dd;
+
+  /* Contribution Graph Colors */
+  --color-contrib-0: #161b22;
+  --color-contrib-1: #0e4429;
+  --color-contrib-2: #006d32;
+  --color-contrib-3: #26a641;
+  --color-contrib-4: #39d353;
+
+  /* Fonts */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-gh-bg text-gh-text font-body antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(137, 87, 229, 0.06) 0%, transparent 40%),
+    linear-gradient(to bottom, #0d1117 0%, #010409 100%);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar - GitHub style */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gh-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gh-border rounded-full;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gh-text-subtle;
+}
+
+/* Selection */
+::selection {
+  @apply bg-gh-blue/30 text-gh-text;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Contribution graph animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Glow effects for accent elements */
+.glow-green {
+  box-shadow: 0 0 20px rgba(35, 134, 54, 0.3);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(137, 87, 229, 0.3);
+}
+
+/* Gradient text utilities */
+.text-gradient-blue-purple {
+  background: linear-gradient(135deg, #58a6ff 0%, #8957e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-green-cyan {
+  background: linear-gradient(135deg, #3fb950 0%, #56d4dd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effect */
+.card-hover {
+  @apply transition-all duration-200;
+}
+
+.card-hover:hover {
+  @apply bg-gh-card-hover border-gh-border;
+  transform: translateY(-2px);
+}
+
+/* Language color dots */
+.lang-dot {
+  @apply w-3 h-3 rounded-full inline-block;
+}
