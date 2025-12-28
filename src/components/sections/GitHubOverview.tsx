@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaCodeBranch, FaStar, FaCode, FaFire, FaClock, FaChevronDown } from 'react-icons/fa';
-import { VscGitCommit, VscRepo, VscGitPullRequest, VscIssues, VscGitMerge } from 'react-icons/vsc';
+import { VscGitCommit, VscRepo, VscGitPullRequest, VscIssues } from 'react-icons/vsc';
 import { personalDetails } from '../../data/personal';
 
 interface GitHubUser {
@@ -122,7 +122,7 @@ const GitHubOverview: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [contributions, setContributions] = useState<number[][]>([]);
   const [monthLabels, setMonthLabels] = useState<{ month: string; position: number }[]>([]);
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  // const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [showAllActivity, setShowAllActivity] = useState(false);
 
   const username = personalDetails.github || 'rpradeepraj';
