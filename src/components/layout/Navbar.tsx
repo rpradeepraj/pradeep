@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
 
           {/* CV Download Button */}
           <a
-            href="/resume.pdf"
+            href="/Resume.pdf"
             download
             className="ml-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gh-green to-gh-blue text-white text-sm font-medium rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg shadow-gh-green/20 hover:shadow-gh-green/30"
           >
