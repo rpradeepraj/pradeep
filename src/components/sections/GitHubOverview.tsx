@@ -122,12 +122,10 @@ const getContributionColor = (level: number) => {
   return colors[Math.min(level, 4)];
 };
 
-// Generate 3 years of weeks (156 weeks)
+// Generate 3 years of weeks (approx 156 weeks) ending at TODAY
 const generateThreeYearGrid = (events: GitHubEvent[]) => {
   const weeks: number[][] = [];
   const today = new Date();
-  const threeYearsAgo = new Date(today);
-  threeYearsAgo.setFullYear(today.getFullYear() - 3);
   
   // Create event count map by date
   const eventCountByDate: Record<string, number> = {};
@@ -136,19 +134,43 @@ const generateThreeYearGrid = (events: GitHubEvent[]) => {
     eventCountByDate[date] = (eventCountByDate[date] || 0) + 1;
   });
 
-  // Generate 156 weeks (3 years)
-  for (let w = 0; w < 156; w++) {
+  // We want to show exactly 3 years ending today.
+  // Start from (Today - 3 years) (roughly) but align to weeks?
+  // Easier: generate weeks BACKWARDS from today then reverse, or forward from start date.
+  // GitHub grid usually starts on Sunday.
+  
+  const endDate = new Date(today);
+  const startDate = new Date(today);
+  startDate.setFullYear(today.getFullYear() - 3); // 3 years back
+  
+  // Align start date to previous Sunday to make grid look nice? Or just stream of days.
+  // Standard GitHub contribution graph is rows=7 (days), columns=weeks.
+  
+  const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const totalWeeks = Math.ceil(totalDays / 7) + 1; // buffer
+
+  // Let's generate 52*3 = 156 or so weeks.
+  
+  let currentDate = new Date(startDate);
+  
+  for (let w = 0; w < totalWeeks; w++) {
     const week: number[] = [];
     for (let d = 0; d < 7; d++) {
-      const date = new Date(threeYearsAgo);
-      date.setDate(date.getDate() + (w * 7) + d);
-      const dateStr = date.toISOString().split('T')[0];
+        // If we've passed today, we can stop or fill empty
+        if (currentDate > endDate) {
+            // Fill remainder of the week with empty if needed, or just let it be
+            // actually if we stop, the grid might look cut off. 
+            // Better to fill with 0 until the week ends?
+            // But we can just clamp logic.
+        }
+        
+      const dateStr = currentDate.toISOString().split('T')[0];
       
       // Get actual event count or generate some activity pattern
       const count = eventCountByDate[dateStr] || 0;
       
       // For dates without events, add some random historical data
-      if (count === 0 && date < today) {
+      if (count === 0 && currentDate <= today) {
         const rand = Math.random();
         if (rand < 0.35) week.push(0);
         else if (rand < 0.55) week.push(1);
@@ -158,8 +180,12 @@ const generateThreeYearGrid = (events: GitHubEvent[]) => {
       } else {
         week.push(Math.min(count, 4));
       }
+      
+      // Increment day
+      currentDate.setDate(currentDate.getDate() + 1);
     }
     weeks.push(week);
+    if (currentDate > endDate) break; 
   }
   return weeks;
 };
@@ -168,16 +194,28 @@ const generateThreeYearGrid = (events: GitHubEvent[]) => {
 const getMonthLabels = () => {
   const labels: { month: string; position: number }[] = [];
   const today = new Date();
-  const threeYearsAgo = new Date(today);
-  threeYearsAgo.setFullYear(today.getFullYear() - 3);
-  
+  const startDate = new Date(today);
+  startDate.setFullYear(today.getFullYear() - 3);
+
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   let currentMonth = -1;
-  for (let w = 0; w < 156; w++) {
-    const date = new Date(threeYearsAgo);
-    date.setDate(date.getDate() + (w * 7));
-    const month = date.getMonth();
+  
+  // We'll iterate similarly to the grid generation to find week positions
+  // But exact comparison might be tricky. Let's just approximate by week count.
+  // Actually, let's just stick to the same loop structure to be safe.
+  
+  const totalDays = Math.ceil((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const totalWeeks = Math.ceil(totalDays / 7) + 5; 
+
+  for (let w = 0; w < totalWeeks; w++) {
+      // Check the date at the START of the week
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + (w * 7));
+      
+      if (date > today) break;
+
+      const month = date.getMonth();
     
     if (month !== currentMonth) {
       currentMonth = month;
@@ -200,6 +238,7 @@ const GitHubOverview: React.FC = () => {
   const [monthLabels, setMonthLabels] = useState<{ month: string; position: number }[]>([]);
   const [showAllActivity, setShowAllActivity] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   const username = personalDetails.github || 'rpradeepraj';
 
@@ -269,6 +308,14 @@ const GitHubOverview: React.FC = () => {
 
     fetchGitHubData();
   }, [username]);
+
+  // Scroll to end of contribution graph on load
+  useEffect(() => {
+    if (!loading && scrollContainerRef.current) {
+      const scrollContainer = scrollContainerRef.current;
+      scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+    }
+  }, [loading, contributions]);
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -420,19 +467,15 @@ const GitHubOverview: React.FC = () => {
           </div>
 
           {/* Month Labels */}
-          <div className="overflow-x-auto">
-            <div className="min-w-[900px]">
-              <div className="flex mb-1 pl-6">
+          <div className="overflow-x-auto custom-scrollbar" ref={scrollContainerRef}>
+            <div className="min-w-[max-content] pb-2">
+              <div className="flex mb-1 pl-6 relative h-4">
                 {monthLabels.map((label, idx) => (
                   <span 
                     key={idx} 
-                    className="text-[10px] text-gh-text-subtle"
+                    className="text-[10px] text-gh-text-subtle absolute whitespace-nowrap"
                     style={{ 
-                      position: 'relative',
-                      left: `${label.position * 8}px`,
-                      marginRight: idx < monthLabels.length - 1 
-                        ? `${(monthLabels[idx + 1].position - label.position) * 8 - 30}px` 
-                        : 0 
+                      left: `${label.position * 10}px` // Increased spacing slightly
                     }}
                   >
                     {label.month}
@@ -442,7 +485,7 @@ const GitHubOverview: React.FC = () => {
 
               {/* Day Labels + Graph */}
               <div className="flex gap-1">
-                <div className="flex flex-col justify-around text-[10px] text-gh-text-subtle pr-1" style={{ height: '70px' }}>
+                <div className="flex flex-col justify-around text-[10px] text-gh-text-subtle pr-1 sticky left-0 bg-gh-card z-10" style={{ height: '70px' }}>
                   <span>Mon</span>
                   <span>Wed</span>
                   <span>Fri</span>
@@ -450,14 +493,14 @@ const GitHubOverview: React.FC = () => {
 
                 <div className="flex gap-[2px]">
                   {contributions.map((week, wIdx) => (
-                    <div key={wIdx} className="flex flex-col gap-[2px]">
+                    <div key={wIdx} className="flex flex-col gap-[2px] w-[8px]">
                       {week.map((day, dIdx) => (
                         <motion.div
                           key={dIdx}
                           initial={{ scale: 0, opacity: 0 }}
                           whileInView={{ scale: 1, opacity: 1 }}
                           viewport={{ once: true }}
-                          transition={{ delay: wIdx * 0.002 }}
+                          transition={{ delay: 0.001 * wIdx }}
                           whileHover={{ scale: 1.5 }}
                           className={`w-[8px] h-[8px] rounded-sm ${getContributionColor(day)} cursor-pointer`}
                           title={`${day * 6} contributions`}

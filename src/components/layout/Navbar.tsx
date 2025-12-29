@@ -7,10 +7,10 @@ import { useTheme } from '../../context/ThemeContext';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
-  { name: 'Apps', href: '#apps' },
+  // { name: 'Apps', href: '#apps' },
   { name: 'Experience', href: '#experience' },
   { name: 'Skills', href: '#skills' },
-  { name: 'About', href: '#about' },
+  // { name: 'About', href: '#about' },
   { name: 'GitHub', href: '#github' },
 ];
 

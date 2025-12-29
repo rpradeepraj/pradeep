@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { personalDetails } from '../../data/personal';
 import { FaMapMarkerAlt, FaGlobe, FaCode, FaCalendarAlt } from 'react-icons/fa';
-import { VscGithubAlt } from 'react-icons/vsc';
 
 const Hero: React.FC = () => {
   const stats = [
@@ -37,7 +36,7 @@ const Hero: React.FC = () => {
             <div className="absolute top-0 left-0 w-20 h-20 border-l-2 border-t-2 border-gh-green/30 rounded-tl-xl" />
             <div className="absolute bottom-0 right-0 w-20 h-20 border-r-2 border-b-2 border-gh-purple/30 rounded-br-xl" />
 
-            {/* Header with avatar placeholder and info */}
+            {/* Header with avatar profile and info */}
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
               {/* Avatar */}
               <motion.div 
@@ -46,22 +45,24 @@ const Hero: React.FC = () => {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="relative"
               >
-                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-gh-green via-gh-blue to-gh-purple p-1">
-                  <div className="w-full h-full rounded-full bg-gh-card flex items-center justify-center">
-                    <VscGithubAlt className="text-5xl md:text-6xl text-gh-text" />
-                  </div>
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-gh-bg/50 overflow-hidden shadow-xl">
+                    <img 
+                      src="/profile.jpg" 
+                      alt={personalDetails.name}
+                      className="w-full h-full object-cover"
+                    />
                 </div>
                 {/* Online indicator */}
-                <div className="absolute bottom-2 right-2 w-5 h-5 bg-gh-green rounded-full border-4 border-gh-card" />
+                <div className="absolute bottom-4 right-4 w-5 h-5 bg-gh-green rounded-full border-4 border-gh-card shadow-sm" />
               </motion.div>
 
               {/* Info */}
-              <div className="flex-1 text-center md:text-left">
+              <div className="flex-1 text-center md:text-left pt-2">
                 <motion.h1 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  className="text-3xl md:text-4xl lg:text-5xl font-bold text-gh-text mb-2"
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-gh-text mb-3"
                 >
                   {personalDetails.name}
                 </motion.h1>
@@ -70,66 +71,65 @@ const Hero: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
-                  className="text-lg md:text-xl text-gh-text-muted mb-4"
+                  className="text-xl md:text-2xl text-gh-text-muted mb-6 flex items-center justify-center md:justify-start gap-3"
                 >
+                  <FaCode className="text-gh-blue" />
                   {personalDetails.role}
                 </motion.h2>
 
-                {/* Meta info */}
-                <motion.div 
+                {/* Bio */}
+                <motion.p 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
-                  className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gh-text-muted"
+                  className="text-gh-text-muted leading-relaxed text-lg max-w-2xl mx-auto md:mx-0 mb-6"
                 >
-                  <span className="flex items-center gap-1">
+                  {personalDetails.about}
+                </motion.p>
+
+                {/* Meta info */}
+                {/* <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                  className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gh-text-muted mb-8"
+                > */}
+                  {/* <span className="flex items-center gap-2">
                     <FaMapMarkerAlt className="text-gh-text-subtle" />
                     {personalDetails.address}
-                  </span>
-                  <span className="flex items-center gap-1">
+                  </span> */}
+                  {/* <span className="flex items-center gap-2">
                     <FaGlobe className="text-gh-blue" />
                     <a href={personalDetails.website} className="hover:text-gh-blue transition-colors">
-                      pradeepraj.co.in
+                      {personalDetails.website.replace(/^https?:\/\//, '')}
                     </a>
-                  </span>
-                  <span className="flex items-center gap-1">
+                  </span> */}
+                  {/* <span className="flex items-center gap-2">
                     <FaCalendarAlt className="text-gh-text-subtle" />
                     5+ years in tech
-                  </span>
+                  </span> */}
+                {/* </motion.div> */}
+
+                 {/* Stats - Unified */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  className="flex flex-wrap justify-center md:justify-start gap-8 border-t border-gh-border-muted/50 pt-6"
+                >
+                    {stats.map((stat, index) => (
+                      <div key={index} className="text-center md:text-left">
+                        <div className={`text-2xl md:text-3xl font-bold ${stat.color} mb-1`}>
+                          {stat.value}
+                        </div>
+                        <div className="text-sm text-gh-text-subtle">
+                          {stat.label}
+                        </div>
+                      </div>
+                    ))}
                 </motion.div>
               </div>
             </div>
-
-            {/* Bio */}
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="mt-6 text-gh-text-muted leading-relaxed text-center md:text-left"
-            >
-              {personalDetails.about}
-            </motion.p>
-
-            {/* Stats bar */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="mt-8 pt-6 border-t border-gh-border-muted"
-            >
-              <div className="grid grid-cols-3 gap-4">
-                {stats.map((stat, index) => (
-                  <div key={index} className="text-center p-4 rounded-lg bg-gh-bg/50 hover:bg-gh-bg transition-colors">
-                    <div className={`text-2xl md:text-3xl font-bold ${stat.color}`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-xs md:text-sm text-gh-text-subtle mt-1">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
