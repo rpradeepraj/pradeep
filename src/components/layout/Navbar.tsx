@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenuAlt3, HiX } from 'react-icons/hi';
+import { HiMenuAlt3, HiX, HiDownload, HiSun, HiMoon } from 'react-icons/hi';
 import { FaGithub } from 'react-icons/fa';
 import { VscCode } from 'react-icons/vsc';
+import { useTheme } from '../../context/ThemeContext';
 
 const navLinks = [
-  { name: 'Overview', href: '#home' },
+  { name: 'Home', href: '#home' },
+  { name: 'Apps', href: '#apps' },
+  { name: 'Experience', href: '#experience' },
+  { name: 'Skills', href: '#skills' },
   { name: 'About', href: '#about' },
   { name: 'GitHub', href: '#github' },
-  { name: 'Skills', href: '#skills' },
 ];
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,24 +59,69 @@ const Navbar: React.FC = () => {
             </a>
           ))}
           
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="ml-2 p-2 text-gh-text-muted hover:text-gh-text transition-colors rounded-md hover:bg-gh-card"
+            aria-label="Toggle theme"
+          >
+            <motion.div
+              initial={false}
+              animate={{ rotate: theme === 'dark' ? 0 : 180 }}
+              transition={{ duration: 0.3 }}
+            >
+              {theme === 'dark' ? (
+                <HiSun className="text-xl text-gh-yellow" />
+              ) : (
+                <HiMoon className="text-xl text-gh-purple" />
+              )}
+            </motion.div>
+          </button>
+
           {/* GitHub Icon */}
           <a
-            href="https://github.com/"
+            href="https://github.com/rpradeepraj"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-4 p-2 text-gh-text-muted hover:text-gh-text transition-colors rounded-md hover:bg-gh-card"
+            className="ml-2 p-2 text-gh-text-muted hover:text-gh-text transition-colors rounded-md hover:bg-gh-card"
           >
             <FaGithub className="text-xl" />
           </a>
+
+          {/* CV Download Button */}
+          <a
+            href="/resume.pdf"
+            download
+            className="ml-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gh-green to-gh-blue text-white text-sm font-medium rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg shadow-gh-green/20 hover:shadow-gh-green/30"
+          >
+            <HiDownload className="text-lg" />
+            CV
+          </a>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-xl text-gh-text-muted hover:text-gh-text focus:outline-none border border-gh-border p-2 rounded-lg hover:bg-gh-card transition-colors"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <HiX /> : <HiMenuAlt3 />}
-        </button>
+        {/* Mobile Right Section */}
+        <div className="md:hidden flex items-center gap-2">
+          {/* Theme Toggle - Mobile */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 text-gh-text-muted hover:text-gh-text transition-colors rounded-lg border border-gh-border hover:bg-gh-card"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <HiSun className="text-xl text-gh-yellow" />
+            ) : (
+              <HiMoon className="text-xl text-gh-purple" />
+            )}
+          </button>
+
+          {/* Menu Toggle */}
+          <button
+            className="text-xl text-gh-text-muted hover:text-gh-text focus:outline-none border border-gh-border p-2 rounded-lg hover:bg-gh-card transition-colors"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <HiX /> : <HiMenuAlt3 />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
@@ -96,13 +145,22 @@ const Navbar: React.FC = () => {
                 </a>
               ))}
               <a
-                href="https://github.com/"
+                href="https://github.com/rpradeepraj"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-2 text-base font-medium text-gh-text-muted hover:text-gh-text px-4 py-2 rounded-md hover:bg-gh-bg transition-colors"
               >
                 <FaGithub /> GitHub Profile
+              </a>
+              {/* CV Download Button - Mobile */}
+              <a
+                href="/resume.pdf"
+                download
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 text-base font-medium text-white px-4 py-3 mt-2 rounded-lg bg-gradient-to-r from-gh-green to-gh-blue transition-colors"
+              >
+                <HiDownload /> Download CV
               </a>
             </div>
           </motion.div>

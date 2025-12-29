@@ -38,17 +38,121 @@
   --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 
-:root {
+/* Dark theme (default) */
+:root,
+.dark-theme {
   color-scheme: dark;
+  --gh-bg: #0d1117;
+  --gh-bg-secondary: #010409;
+  --gh-card: #161b22;
+  --gh-card-hover: #1f262d;
+  --gh-border: #30363d;
+  --gh-border-muted: #21262d;
+  --gh-text: #e6edf3;
+  --gh-text-muted: #8b949e;
+  --gh-text-subtle: #6e7681;
+  --contrib-0: #161b22;
+  --contrib-1: #0e4429;
+  --contrib-2: #006d32;
+  --contrib-3: #26a641;
+  --contrib-4: #39d353;
+}
+
+/* Light theme - Colorful */
+.light-theme {
+  color-scheme: light;
+  --gh-bg: transparent;
+  --gh-bg-secondary: rgba(255, 255, 255, 0.6);
+  --gh-card: rgba(255, 255, 255, 0.7);
+  --gh-card-hover: rgba(255, 255, 255, 0.85);
+  --gh-border: rgba(139, 92, 246, 0.2);
+  --gh-border-muted: rgba(59, 130, 246, 0.15);
+  --gh-text: #1a202c;
+  --gh-text-muted: #4a5568;
+  --gh-text-subtle: #718096;
+  --contrib-0: rgba(237, 242, 247, 0.8);
+  --contrib-1: #9ae6b4;
+  --contrib-2: #48bb78;
+  --contrib-3: #38a169;
+  --contrib-4: #276749;
+
+  /* Vibrant accent colors for light theme */
+  --color-gh-green: #10b981;
+  --color-gh-green-bright: #34d399;
+  --color-gh-blue: #3b82f6;
+  --color-gh-purple: #8b5cf6;
+  --color-gh-pink: #ec4899;
+  --color-gh-yellow: #f59e0b;
+  --color-gh-orange: #f97316;
+  --color-gh-red: #ef4444;
+  --color-gh-cyan: #06b6d4;
+}
+
+/* Apply CSS variables to Tailwind theme */
+.light-theme {
+  --color-gh-bg: var(--gh-bg);
+  --color-gh-bg-secondary: var(--gh-bg-secondary);
+  --color-gh-card: var(--gh-card);
+  --color-gh-card-hover: var(--gh-card-hover);
+  --color-gh-border: var(--gh-border);
+  --color-gh-border-muted: var(--gh-border-muted);
+  --color-gh-text: var(--gh-text);
+  --color-gh-text-muted: var(--gh-text-muted);
+  --color-gh-text-subtle: var(--gh-text-subtle);
+  --color-contrib-0: var(--contrib-0);
+  --color-contrib-1: var(--contrib-1);
+  --color-contrib-2: var(--contrib-2);
+  --color-contrib-3: var(--contrib-3);
+  --color-contrib-4: var(--contrib-4);
+}
+
+/* Light theme card styling with glass effect */
+.light-theme .bg-gh-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(139, 92, 246, 0.15);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .bg-gh-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 1) 100%);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Light theme gradient sections */
+.light-theme section {
+  position: relative;
+}
+
+.light-theme .bg-gh-bg {
+  background: transparent;
 }
 
 body {
   @apply bg-gh-bg text-gh-text font-body antialiased;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-theme body,
+:root body {
   background-image:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse 60% 40% at 100% 0%, rgba(137, 87, 229, 0.06) 0%, transparent 40%),
     linear-gradient(to bottom, #0d1117 0%, #010409 100%);
-  min-height: 100vh;
+}
+
+.light-theme body {
+  background:
+    radial-gradient(ellipse 120% 100% at 10% -20%, rgba(59, 130, 246, 0.25) 0%, transparent 45%),
+    radial-gradient(ellipse 100% 80% at 90% 0%, rgba(139, 92, 246, 0.22) 0%, transparent 40%),
+    radial-gradient(ellipse 80% 70% at 50% 110%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 50% at -10% 60%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse 50% 40% at 100% 70%, rgba(245, 158, 11, 0.12) 0%, transparent 35%),
+    linear-gradient(160deg, #f0f9ff 0%, #fdf4ff 25%, #f0fdf4 50%, #fef3c7 75%, #fce7f3 100%);
+  background-attachment: fixed;
 }
 
 /* Custom Scrollbar - GitHub style */
@@ -138,4 +242,9 @@ html {
 /* Language color dots */
 .lang-dot {
   @apply w-3 h-3 rounded-full inline-block;
+}
+
+/* Theme transition for all elements */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
